@@ -47,9 +47,9 @@ struct FetchService{
         
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let character = try decoder.decode(Char.self, from: data)
+        let characters = try decoder.decode([Char].self, from: data)
         
-        return character
+        return characters[0]
         
     }
 }

@@ -10,6 +10,7 @@ struct FetchService{
     private enum FetchError: Error{
         case badRequest
     }
+
     
    private let baseURL = URL(string : "https://breaking-bad-api-six.vercel.app/api")!
     

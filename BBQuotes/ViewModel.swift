@@ -21,10 +21,10 @@ class ViewModel {
     
     private let fetcher = FetchService()
     
-    var quote: Quote
-    var character : Char
-    
-    init(){
-        
-    }
+//    var quote: Quote
+//    var character : Char
+//    
+//    init(){
+//        
+//    }
 }

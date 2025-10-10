@@ -7,11 +7,11 @@
 import Foundation
 struct FetchService{
     
-    enum FetchError: Error{
+    private enum FetchError: Error{
         case badRequest
     }
     
-    let baseURL = URL(string : "https://breaking-bad-api-six.vercel.app/api")!
+   private let baseURL = URL(string : "https://breaking-bad-api-six.vercel.app/api")!
     
     func fetchQuote(show : String) async throws -> Quote{
         //BUILD FETCH URL
@@ -51,5 +51,25 @@ struct FetchService{
         
         return characters[0]
         
+    }
+    
+    func fetchDeath(character : String) async throws -> Death?{
+        let fetchURL = baseURL.appendingPathComponent("deaths")
+        
+        let (data,response) = try await URLSession.shared.data(from: fetchURL)
+        
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+            throw FetchError.badRequest
+        }
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let deaths = try decoder.decode([Death].self, from: data)
+        
+        for death in deaths{
+            if death.character == character{
+                return death
+            }
+        }
+        return nil
     }
 }

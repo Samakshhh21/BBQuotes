@@ -10,6 +10,7 @@ import SwiftUI
 struct QuoteView: View {
     let vm = ViewModel()
     let show : String
+    @State var showCharacterInfo = false
     
     var body: some View {
         GeometryReader{ geo in
@@ -21,50 +22,68 @@ struct QuoteView: View {
                 VStack{
                     
                     Spacer(minLength: 160)
-                    
-                    Text("\"\(vm.quote.quote)\"")
-                        .minimumScaleFactor(0.5)
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(.white)
-                        .padding()
-                        .background(.black.opacity(0.5))
-                        .clipShape(.rect(cornerRadius: 25))
-                        .padding(.horizontal)
-                    
-                    Spacer()
-                    
-                    ZStack(alignment: .bottom){
-                        AsyncImage(url: vm.character.images[0]){image in
-                            image
-                                .resizable()
-                                .scaledToFit()
-                                .clipShape(.rect(cornerRadius: 50))
-                                
-                            } placeholder: {
-                            ProgressView()
-                        }
-                            .frame(width: geo.size.width/1.1,height: geo.size.height/1.8)
-                        
-                        Text(vm.quote.character)
+                    switch(vm.status){
+                    case .notStarted:
+                        EmptyView()
+                    case .fetching:
+                        ProgressView()
+                    case .success:
+                        Text("\"\(vm.quote.quote)\"")
+                            .minimumScaleFactor(0.5)
+                            .multilineTextAlignment(.center)
                             .foregroundStyle(.white)
                             .padding()
-                            .background(.ultraThinMaterial)
+                            .background(.black.opacity(0.5))
+                            .clipShape(.rect(cornerRadius: 25))
+                            .padding(.horizontal)
+                        
+                        Spacer()
+                        
+                        ZStack(alignment: .bottom){
+                            AsyncImage(url: vm.character.images[0]){image in
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .clipShape(.rect(cornerRadius: 50))
+                                    
+                                } placeholder: {
+                                ProgressView()
+                            }
+                                .frame(width: geo.size.width/1.1,height: geo.size.height/1.8)
+                            
+                            Text(vm.quote.character)
+                                .frame(maxWidth: .infinity)
+                                .foregroundStyle(.white)
+                                .padding()
+                                .background(.ultraThinMaterial)
+                            }
+                        .frame(width: geo.size.width/1.1,height: geo.size.height/1.8)
+                        .clipShape(.rect(cornerRadius: 50))
+                        .onTapGesture {
+                            showCharacterInfo.toggle()
                         }
-                    .frame(width: geo.size.width/1.1,height: geo.size.height/1.8)
-                    .clipShape(.rect(cornerRadius: 50))
+                        
+                    default :
+                        Text("Fetching Failed")
+                    }
+                    
+                  
                     
                     Spacer()
                     
                     Button{
-                        
+                        Task {
+                            await vm.getData(show: show)
+                        }
+                       
                     } label : {
                         Text("Get Random Quote")
                         .font(.title)
                         .padding()
                         .foregroundStyle(.white)
-                        .background(.breakingBadGreen)
+                        .background(show == "Breaking Bad" ? .breakingBadGreen : .betterCallSaulGrey)
                         .clipShape(.rect(cornerRadius: 7))
-                        .shadow(color : .breakingBadYellow, radius: 2)
+                        .shadow(color :show=="Breaking Bad" ? .breakingBadYellow : .black, radius: 2)
                     }
                     Spacer(minLength: 185)
                     
@@ -78,6 +97,9 @@ struct QuoteView: View {
             
         }
         .ignoresSafeArea()
+        .sheet(isPresented: $showCharacterInfo){
+            CharacterView(character: vm.character, show: show)
+        }
     }
 }
 

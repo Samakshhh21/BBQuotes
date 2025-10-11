@@ -19,13 +19,19 @@ struct QuoteView: View {
                     .frame(width: geo.size.width * 2.7 , height: geo.size.height * 1.2)
                 
                 VStack{
+                    
+                    Spacer(minLength: 160)
+                    
                     Text("\"\(vm.quote.quote)\"")
+                        .minimumScaleFactor(0.5)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.white)
                         .padding()
                         .background(.black.opacity(0.5))
                         .clipShape(.rect(cornerRadius: 25))
                         .padding(.horizontal)
+                    
+                    Spacer()
                     
                     ZStack(alignment: .bottom){
                         AsyncImage(url: vm.character.images[0]){image in
@@ -47,6 +53,8 @@ struct QuoteView: View {
                     .frame(width: geo.size.width/1.1,height: geo.size.height/1.8)
                     .clipShape(.rect(cornerRadius: 50))
                     
+                    Spacer()
+                    
                     Button{
                         
                     } label : {
@@ -58,7 +66,7 @@ struct QuoteView: View {
                         .clipShape(.rect(cornerRadius: 7))
                         .shadow(color : .breakingBadYellow, radius: 2)
                     }
-                    
+                    Spacer(minLength: 185)
                     
                     
                     }

@@ -35,4 +35,17 @@ class ViewModel {
         character = try! decoder.decode(Char.self, from: charData)
         
     }
+    
+    func getData(show : String) async {
+        status = .fetching
+        do {
+             quote = try await fetcher.fetchQuote(show: show)
+            character = try await fetcher.fetchCharacter(name: quote.character)
+            character.death = try await fetcher.fetchDeath(character: character.name)
+            status = .success
+            
+        }catch {
+            status = .failure(error: error)
+        }
+    }
 }

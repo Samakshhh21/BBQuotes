@@ -40,7 +40,7 @@ struct Char : Decodable{
         let deathDecoder = JSONDecoder()
         deathDecoder.keyDecodingStrategy = .convertFromSnakeCase
         
-        let deathData = try! Data(contentsOf: Bundle.main.url(forResource: "sampledeath", withExtension: "json")!)        
-        death = try container.decodeIfPresent(Death.self, forKey: .death)
+        let deathData = try! Data(contentsOf: Bundle.main.url(forResource: "sampledeath", withExtension: "json")!)
+        death = try deathDecoder.decode(Death.self, from: deathData)
     }
 }

@@ -14,6 +14,7 @@ struct CharacterView: View {
     
     @State private var statusExpanded: Bool = false
     
+    
     var body: some View {
         GeometryReader { geo in
             ZStack(alignment : .top) {
